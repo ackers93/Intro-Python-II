@@ -46,16 +46,17 @@ sword = Item('Sword', 'A old rusty sword dropped by a previous adventurer')
 coin = Item('Coin', 'Coin used for purchasing goods and services')
 bow = Item('Bow', 'Bow for when you want to stab someone who is far away from you')
 
-room['outside'].items.append(torch)
-room['foyer'].items.append(sword)
-room['narrow'].items.append(coin)
-room['overlook'].items.append(bow)
+room['outside'].add_item(torch)
+room['foyer'].add_item(sword)
+room['narrow'].add_item(coin)
+room['overlook'].add_item(bow)
+
+action = ['Get', 'Drop']
 
 # Make a new player object that is currently in the 'outside' room.
 
-player = Player(input("Input your name:"), room['outside'])
-print(f'Welcome, {player.name}')
-print(player.current_room.description)
+name = input("Please enter your player name: ")
+player = Player(name, room['outside'], [])
 
 # Write a loop that:
 #
@@ -69,38 +70,105 @@ print(player.current_room.description)
 # If the user enters "q", quit the game.
 
 
-game = True
+print('You are currently in', player.location.name)
+print(player.location.description)
+print(f'You find {player.location.items[0].description}')
 
-while game:
-    command = input(
-        'chose n for north, e for east, s for south and w for west, or q to quit.')
-    if command == 'n':
-        player.move(command)
 
-    elif command == 'e':
-        player.move(command)
+while True:
+    cmd = input(
+        "Please enter a direction you would like to travel in.... \n [I] - Inventory \n [n] - North \n [e] - East \n [s] - South \n [w] - West, \n or press q to quit the game: ")
 
-    elif command == 's':
-        player.move(command)
-
-    elif command == 'w':
-        player.move(command)
-
-    elif command == 'i':
-        player.inventory_list()
-
-    elif command == 'take':
-        item = command.split(' ')[0]
-        player.take(item)
-        player.inventory_list()
-
-    elif command == 'drop':
-        item = command.split(' ')[0]
-        player.drop(item)
-        player.inventory_list()
-
-    elif command == 'q':
-        game = False
-
+    if cmd == 'n':
+        # If player.location.n_to is NOT "NONE", then assign player.location.n_to (foyer) the current location.
+        if player.location.n_to is not None:
+            player.location = player.location.n_to
+            print(
+                f'You are now in {player.location.name}, {player.location.description}')
+        else:
+            print('You cannot go that way!')
+        if player.location.items != []:
+            for v in player.location.items:
+                print(f'You find {v.description}')
+                i = input(
+                    f'Would you like to pick up the {v.name}? [Get] [Item-name]: ')
+                if i == f'{action[0]} {player.location.items[0].name}':
+                    player.pick_item(player.location.items[0])
+                    print(
+                        f'You have picked up the {player.location.items[0].name}!')
+                    player.location.remove_item(player.location.items[0])
+        else:
+            print('The room is empty!')
+    elif cmd == 'e':
+        if player.location.e_to is not None:
+            player.location = player.location.e_to
+            print(
+                f'You are now in {player.location.name}, {player.location.description}')
+        else:
+            print('You cannot go that way!')
+        if player.location.items != []:
+            for v in player.location.items:
+                print(f'You find {v.description}')
+                i = input(
+                    f'Would you like to pick up the {player.location.items[0].name}? [Get] [Item-name]: ')
+            if i == f'{action[0]} {player.location.items[0].name}':
+                player.pick_item(player.location.items[0])
+                print(
+                    f'You have picked up the {player.location.items[0].name}!')
+                player.location.remove_item(player.location.items[0])
+        else:
+            print('The room is empty!')
+    elif cmd == 's':
+        if player.location.s_to is not None:
+            player.location = player.location.s_to
+            print(
+                f'You are now in {player.location.name}, {player.location.description}')
+        else:
+            print('You cannot go that way!')
+        if player.location.items != []:
+            for v in player.location.items:
+                print(f'You find {v.description}')
+                i = input(
+                    f'Would you like to pick up the {player.location.items[0].name}? [Get] [Item-name]: ')
+            if i == f'{action[0]} {player.location.items[0].name}':
+                player.pick_item(player.location.items[0])
+                print(
+                    f'You have picked up the {player.location.items[0].name}!')
+                player.location.remove_item(player.location.items[0])
+        else:
+            print('The room is empty!')
+    elif cmd == 'w':
+        if player.location.w_to is not None:
+            player.location = player.location.w_to
+            print(
+                f'You are now in {player.location.name}, {player.location.description}')
+        else:
+            print('You cannot go that way!')
+        if player.location.items != []:
+            for v in player.location.items:
+                print(f'You find {v.description}')
+                i = input(
+                    f'Would you like to pick up the {player.location.items[0].name}? [Get] [Item-name]: ')
+            if i == f'{action[0]} {player.location.items[0].name}':
+                player.pick_item(player.location.items[0])
+                print(
+                    f'You have picked up the {player.location.items[0].name}!')
+                player.location.remove_item(player.location.items[0])
+        else:
+            print('The room is empty!')
+    elif cmd == 'q':
+        exit()
+    elif cmd == 'I':
+        if player.inventory != []:
+            [print(s.name) for s in player.inventory]
+            d = input('Please select an item to remove: ')
+            for i in player.inventory:
+                if i.name == d:
+                    player.drop_item(i)
+                    print(f'You have dropped the {i.name}!')
+                    player.location.add_item(i)
+            [print(j.name) for j in player.inventory]
+        elif player.inventory == []:
+            print('Your inventory is empty!')
     else:
-        print("Try something else")
+        print('You must choose either [n] [s] [e] [w]!')
