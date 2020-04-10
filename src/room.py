@@ -10,3 +10,12 @@ class Room:
         self.s_to = None
         self.e_to = None
         self.w_to = None
+        self.items = []
+
+    def display_room_items(self):
+        if len(self.items) == 0:
+            print("There are no items in this room")
+        else:
+            print('The room contains: ')
+            for item in self.items:
+                print(item.name)

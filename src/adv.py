@@ -1,5 +1,6 @@
 from room import Room
 from player import Player
+from item import Item
 
 # Declare all the rooms
 
@@ -38,6 +39,18 @@ room['treasure'].s_to = room['narrow']
 # Main
 #
 
+# List of objects and assigned rooms
+
+torch = Item('Torch', 'A flaming torch for light and warmth')
+sword = Item('Sword', 'A old rusty sword dropped by a previous adventurer')
+coin = Item('Coin', 'Coin used for purchasing goods and services')
+bow = Item('Bow', 'Bow for when you want to stab someone who is far away from you')
+
+room['outside'].items.append(torch)
+room['foyer'].items.append(sword)
+room['narrow'].items.append(coin)
+room['overlook'].items.append(bow)
+
 # Make a new player object that is currently in the 'outside' room.
 
 player = Player(input("Input your name:"), room['outside'])
@@ -56,7 +69,7 @@ print(player.current_room.description)
 # If the user enters "q", quit the game.
 
 
-game = 1
+game = True
 
 while game:
     command = input(
@@ -72,6 +85,19 @@ while game:
 
     elif command == 'w':
         player.move(command)
+
+    elif command == 'i':
+        player.inventory_list()
+
+    elif command == 'take':
+        item = command.split(' ')[0]
+        player.take(item)
+        player.inventory_list()
+
+    elif command == 'drop':
+        item = command.split(' ')[0]
+        player.drop(item)
+        player.inventory_list()
 
     elif command == 'q':
         game = False
